@@ -5,6 +5,8 @@ import com.zhy.common.utils.R;
 import com.zhy.gulimall.coupon.entity.CouponEntity;
 import com.zhy.gulimall.coupon.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -19,11 +21,32 @@ import java.util.Map;
  * @email sunlightcs@gmail.com
  * @date 2023-06-12 10:49:27
  */
+@RefreshScope
 @RestController
 @RequestMapping("coupon/coupon")
 public class CouponController {
     @Autowired
     private CouponService couponService;
+
+    @Value("${coupon.user.name}")//从application.properties中获取//不要写user.name，他是环境里的变量
+    private String name;
+    @Value("${coupon.user.age}")
+    private Integer age;
+    @RequestMapping("/test")
+    public R test(){
+
+        return R.ok().put("name",name).put("age",age);
+    }
+
+
+
+    @RequestMapping("/member/list")
+    public R membercoupons(){    //全系统的所有返回都返回R
+        // 应该去数据库查用户对于的优惠券，但这个我们简化了，不去数据库查了，构造了一个优惠券给他返回
+        CouponEntity couponEntity = new CouponEntity();
+        couponEntity.setCouponName("满100减10");//优惠券的名字
+        return R.ok().put("coupons",Arrays.asList(couponEntity));
+    }
 
     /**
      * 列表

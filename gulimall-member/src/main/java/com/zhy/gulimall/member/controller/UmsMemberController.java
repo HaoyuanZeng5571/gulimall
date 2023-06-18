@@ -1,20 +1,15 @@
 package com.zhy.gulimall.member.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.zhy.gulimall.member.entity.UmsMemberEntity;
-import com.zhy.gulimall.member.service.UmsMemberService;
 import com.zhy.common.utils.PageUtils;
 import com.zhy.common.utils.R;
+import com.zhy.gulimall.member.entity.UmsMemberEntity;
+import com.zhy.gulimall.member.feign.CouponFeignService;
+import com.zhy.gulimall.member.service.UmsMemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Map;
 
 
 
@@ -30,6 +25,18 @@ import com.zhy.common.utils.R;
 public class UmsMemberController {
     @Autowired
     private UmsMemberService umsMemberService;
+
+    @Autowired
+    CouponFeignService couponFeignService;
+    @RequestMapping("/coupons")
+    public R test() {
+        UmsMemberEntity memberEntity = new UmsMemberEntity();
+        memberEntity.setNickname("zzz");
+
+        R membercoupons = couponFeignService.membercoupons();
+
+        return R.ok().put("member",memberEntity).put("coupons",membercoupons.get("coupons"));
+    }
 
     /**
      * 列表
